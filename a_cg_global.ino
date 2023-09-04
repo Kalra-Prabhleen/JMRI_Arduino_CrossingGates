@@ -23,7 +23,7 @@ int trigger = 8; // read JMRI command (open / close)
 //int buttonState = 0;         // variable for reading the pushbutton status
 
 void setup() {
-  Serial.begin(9600, SERIAL_8N2);
+  Serial.begin(9600, SERIAL_8N2); // Interface with JMRI
   crossing_gate.attach(crossing); // servo object attached to Arduino PWM output
   pinMode(ledPin1, OUTPUT); // LED 1 set as output
   pinMode(ledPin2, OUTPUT); // LED 2 set as output
@@ -70,27 +70,24 @@ void led_flash() {
 }
 
 void close_gate(){
-  led_flash();
-  crossing_gate.write(close);
+  led_flash(); // flash led
+  crossing_gate.write(close); // close gates
 }
 
 void open_gate() {
-  crossing_gate.write(open);
+  crossing_gate.write(open); // open gates
 }
 
-void loop() {
+void loop() { // main loop
 
-// build a packet
-control.process();
+control.process(); // build a data packet
 
-digitalWrite(j_output, control.get_bit(0)); // Train detection output from JMRI
-
- if ((digitalRead(trigger) == 1)) { // gates triggered close or open
+digitalWrite(j_output, control.get_bit(0)); // Train detection output from JMRI 001
+  
+  if ((digitalRead(trigger) == 1)) { // gates triggered close or open
   close_gate(); // flash lights, sound bell and close gates
   } 
-  
   else {
   open_gate(); // open gates
   }
-
 }
